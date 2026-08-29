@@ -1,0 +1,50 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: hospital-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: Sumit@7989
+      MYSQL_DATABASE: hospital_management_system
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - hospital-network
+
+  backend:
+    image: hospital-backend:latest
+    container_name: hospital-backend
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hospital_management_system?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Sumit@7989
+      JWT_SECRET: HospitalManagementSystemSecretKey2026VerySecureKeyForJWT
+      JWT_EXPIRATION: 86400000
+    ports:
+      - "9091:9090"
+    networks:
+      - hospital-network
+
+  frontend:
+    image: hospital-frontend:latest
+    container_name: hospital-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    networks:
+      - hospital-network
+
+volumes:
+  mysql-data:
+
+networks:
+  hospital-network:
+    driver: bridge
