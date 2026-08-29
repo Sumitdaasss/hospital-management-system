@@ -5,7 +5,7 @@ services:
     container_name: hospital-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: Sumit@7989
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: hospital_management_system
     ports:
       - "3307:3306"
@@ -23,9 +23,9 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hospital_management_system?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: Sumit@7989
-      JWT_SECRET: HospitalManagementSystemSecretKey2026VerySecureKeyForJWT
-      JWT_EXPIRATION: 86400000
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
     ports:
       - "9091:9090"
     networks:
