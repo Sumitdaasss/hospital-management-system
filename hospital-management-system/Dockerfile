@@ -1,24 +1,30 @@
-# Stage 1: Build Spring Boot application
+# ================================
+# Build Stage
+# ================================
 FROM maven:3.9.11-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-# Copy Maven configuration
 COPY pom.xml .
 
-# Copy source code
+RUN mvn dependency:go-offline
+
 COPY src ./src
 
-# Build the JAR
 RUN mvn clean package -DskipTests
 
 
-# Stage 2: Run Spring Boot application
-FROM eclipse-temurin:21-jdk
+# ================================
+# Runtime Stage
+# ================================
+FROM eclipse-temurin:21-jre-noble
 
 WORKDIR /app
 
-# Copy generated JAR from build stage
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 9090

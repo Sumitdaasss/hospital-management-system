@@ -4,46 +4,85 @@ services:
     image: mysql:8.0
     container_name: hospital-mysql
     restart: unless-stopped
+
     environment:
-      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: hospital_management_system
+
     ports:
       - "3307:3306"
+
     volumes:
       - mysql-data:/var/lib/mysql
+
     networks:
       - hospital-network
 
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+
   backend:
-    image: hospital-backend:latest
+    image: ghcr.io/sumitdaasss/hospital-management-system-backend:latest
     container_name: hospital-backend
     restart: unless-stopped
+
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hospital_management_system?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+
     ports:
       - "9091:9090"
+
     networks:
       - hospital-network
 
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://localhost:9090/actuator/health || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+
   frontend:
-    image: hospital-frontend:latest
+    image: ghcr.io/sumitdaasss/hospital-management-system-frontend:latest
     container_name: hospital-frontend
     restart: unless-stopped
+
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+
     ports:
       - "5173:80"
+
     networks:
       - hospital-network
+
 
 volumes:
   mysql-data:
+
 
 networks:
   hospital-network:
