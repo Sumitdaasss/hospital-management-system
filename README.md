@@ -1,288 +1,196 @@
 # 🏥 Hospital Management System
 
-A full-stack **Hospital Management System** built with **Spring Boot, Spring Security, JWT, MySQL, React, Vite, and Tailwind CSS**.
+A full-stack Hospital Management System developed as an interview and portfolio project using **Spring Boot, React, MySQL, Spring Security, JWT, Docker, and GitHub Actions**.
 
-The system provides separate interfaces and functionality for **Patients, Doctors, and Administrators**, including authentication, doctor management, appointment booking, doctor availability, and appointment status management.
+The application provides role-based functionality for managing doctors, patients, doctor availability, and appointments through REST APIs and a React frontend.
 
 ---
 
-## 🚀 Features
+## 📌 Project Overview
 
-### 🔐 Authentication & Security
+The Hospital Management System is designed to digitize common hospital operations such as:
 
-* User registration and login
-* JWT-based authentication
+* User registration and authentication
+* Doctor management
+* Patient management
+* Doctor availability management
+* Appointment booking
+* Appointment status management
+* Role-based access control
+* Secure REST APIs
+* Containerized application setup
+
+The project follows a layered Spring Boot architecture and uses JWT-based authentication for securing API endpoints.
+
+---
+
+# 🚀 Features
+
+## 🔐 Authentication & Authorization
+
+* User registration
+* User login
+* JWT authentication
+* Password encryption
 * Role-based authorization
-* Protected frontend routes
+* Protected REST APIs
 * Spring Security integration
-* Separate access for Admin, Doctor, and Patient
 
-### 👨‍⚕️ Doctor Features
+### Supported Roles
 
-* Doctor dashboard
-* Doctor profile management
-* View appointments
-* Manage appointment status
-* Manage availability
-* View appointment details
+* `ADMIN`
+* `DOCTOR`
+* `PATIENT`
 
-### 🧑‍🤝‍🧑 Patient Features
+---
 
-* Patient dashboard
-* Patient profile
-* View available doctors
+## 👨‍⚕️ Doctor Management
+
+* Create doctor
+* View doctors
 * View doctor details
-* Book appointments
-* Select available date and time slots
-* View appointments
-* Track appointment status
-* View appointment details
-
-### 👨‍💼 Admin Features
-
-* Admin dashboard
-* Manage doctors
-* Manage patients
-* View doctor details
-* View patient details
-* Manage appointments
-* View appointment details
+* Update doctor information
+* Delete doctor
 * Manage doctor availability
 
 ---
 
-# 🛠️ Technologies Used
+## 🧑‍🤝‍🧑 Patient Management
+
+* Create patient profile
+* View patient details
+* Update patient information
+* Delete patient
+* Patient authentication
+
+---
+
+## 📅 Appointment Management
+
+* Book appointments
+* View appointments
+* Update appointment information
+* Cancel appointments
+* Appointment status management
+* Doctor availability-based appointment handling
+
+---
+
+## 🕐 Doctor Availability
+
+* Add doctor availability
+* View availability
+* Update availability
+* Manage available dates and timings
+
+---
+
+# 🛠️ Technology Stack
 
 ## Backend
 
-* Java 21
-* Spring Boot 3.5.5
-* Spring Web
-* Spring Data JPA
-* Hibernate
-* Spring Security
-* JWT
-* MySQL
-* Lombok
-* Maven
-* Bean Validation
+| Technology      | Purpose                        |
+| --------------- | ------------------------------ |
+| Java 21         | Programming language           |
+| Spring Boot     | Backend framework              |
+| Spring Security | Authentication & authorization |
+| JWT             | Token-based authentication     |
+| Spring Data JPA | Database access                |
+| Hibernate       | ORM                            |
+| MySQL           | Relational database            |
+| Maven           | Dependency management & build  |
+| Bean Validation | Request validation             |
 
 ## Frontend
 
-* React 18
-* Vite
-* React Router
-* Axios
-* Tailwind CSS
-* Lucide React
-* JavaScript
+| Technology | Purpose               |
+| ---------- | --------------------- |
+| React      | Frontend framework    |
+| JavaScript | Frontend development  |
+| HTML/CSS   | UI                    |
+| REST API   | Backend communication |
+
+## DevOps / Tools
+
+| Technology                | Purpose                     |
+| ------------------------- | --------------------------- |
+| Git                       | Version control             |
+| GitHub                    | Source code management      |
+| Docker                    | Containerization            |
+| Docker Compose            | Multi-container application |
+| GitHub Actions            | CI/CD workflow              |
+| GitHub Container Registry | Docker image registry       |
+| Nginx                     | Frontend web server         |
 
 ---
 
-# 📁 Project Structure
+# 🏗️ Application Architecture
 
 ```text
-Hospital_Management_system/
-│
-├── Frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── hooks/
-│   │   ├── layouts/
-│   │   ├── pages/
-│   │   │   ├── admin/
-│   │   │   ├── doctor/
-│   │   │   ├── patient/
-│   │   │   └── doctors/
-│   │   ├── services/
-│   │   └── utils/
-│   ├── package.json
-│   ├── vite.config.js
-│   └── tailwind.config.js
-│
-├── hospital-management-system/
-│   ├── src/
-│   │   └── main/
-│   │       ├── java/
-│   │       └── resources/
-│   │           └── application.properties
-│   └── pom.xml
-│
-├── .gitignore
-└── README.md
+                    ┌──────────────────────┐
+                    │    React Frontend    │
+                    │       + Nginx        │
+                    └──────────┬───────────┘
+                               │
+                               │ REST API
+                               ▼
+                    ┌──────────────────────┐
+                    │   Spring Boot API    │
+                    │                      │
+                    │  Controllers         │
+                    │       ↓              │
+                    │  Services            │
+                    │       ↓              │
+                    │  Mappers / DTOs      │
+                    │       ↓              │
+                    │  Repositories        │
+                    └──────────┬───────────┘
+                               │
+                               │ JPA / Hibernate
+                               ▼
+                    ┌──────────────────────┐
+                    │        MySQL         │
+                    └──────────────────────┘
 ```
 
 ---
 
-# ⚙️ Prerequisites
+# 🔐 Authentication Flow
 
-Make sure the following are installed:
-
-* Java 21
-* Maven
-* MySQL
-* Node.js
-* npm
-* Git
-
-Check your installations:
-
-```bash
-java -version
-mvn -version
-node -v
-npm -v
-git --version
-```
-
----
-
-# 🗄️ Database Setup
-
-Create the MySQL database:
-
-```sql
-CREATE DATABASE hospital_management_system;
-```
-
-Then configure your database credentials in:
-
-```text
-hospital-management-system/src/main/resources/application.properties
-```
-
-Example:
-
-```properties
-server.port=9090
-
-spring.datasource.url=jdbc:mysql://localhost:3306/hospital_management_system
-spring.datasource.username=root
-spring.datasource.password=YOUR_PASSWORD
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-
-jwt.secret=YOUR_JWT_SECRET
-jwt.expiration=86400000
-```
-
-> **Important:** Never commit your real database password or production JWT secret to GitHub. Use environment variables or a local configuration file for sensitive values.
-
----
-
-# ▶️ Running the Backend
-
-Navigate to the backend directory:
-
-```bash
-cd hospital-management-system
-```
-
-Run the Spring Boot application:
-
-```bash
-mvn spring-boot:run
-```
-
-The backend runs on:
-
-```text
-http://localhost:9090
-```
-
----
-
-# ▶️ Running the Frontend
-
-Open another terminal and navigate to the frontend:
-
-```bash
-cd Frontend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-The frontend will normally run on:
-
-```text
-http://localhost:5173
-```
-
----
-
-# 🔗 Frontend ↔ Backend
-
-The React frontend communicates with the Spring Boot REST API using **Axios**.
-
-The frontend API configuration is located in:
-
-```text
-Frontend/src/services/api.js
-```
-
-The backend is configured to accept requests from the frontend through CORS configuration.
-
-Default setup:
-
-```text
-Frontend
-http://localhost:5173
-
-        │
-        │ REST API / Axios
-        ▼
-
-Backend
-http://localhost:9090
-
-        │
-        ▼
-
-MySQL
-hospital_management_system
-```
-
----
-
-# 🔑 Authentication Flow
-
-The application uses **JWT authentication**.
+The application uses JWT-based authentication.
 
 ```text
 User
  │
  ▼
-Login / Register
+Login
  │
  ▼
 Spring Security
  │
  ▼
-JWT Token
+Validate Credentials
  │
  ▼
-Frontend stores authentication information
+Generate JWT
  │
  ▼
-Axios sends Bearer Token
+Frontend stores token
  │
  ▼
-Protected Backend API
+Bearer Token
+ │
+ ▼
+Protected API
+ │
+ ▼
+JwtAuthenticationFilter
+ │
+ ▼
+Authorize Request
 ```
 
-Authenticated requests use:
+Example:
 
 ```http
 Authorization: Bearer <JWT_TOKEN>
@@ -290,206 +198,503 @@ Authorization: Bearer <JWT_TOKEN>
 
 ---
 
-# 👥 User Roles
+# 📂 Project Structure
 
-The application supports three main roles:
-
-| Role    | Main Responsibilities                                   |
-| ------- | ------------------------------------------------------- |
-| ADMIN   | Manage doctors, patients, appointments and availability |
-| DOCTOR  | Manage profile, availability and appointments           |
-| PATIENT | View doctors and book/manage appointments               |
+```text
+Hospital_Management_system/
+│
+├── Frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   ├── Dockerfile
+│   └── ...
+│
+├── hospital-management-system/
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/
+│   │       │   └── com/hms/projectSpringBoot/
+│   │       │       └── hospital/
+│   │       │           ├── config/
+│   │       │           ├── controller/
+│   │       │           ├── dto/
+│   │       │           ├── entity/
+│   │       │           ├── exception/
+│   │       │           ├── mapper/
+│   │       │           ├── repository/
+│   │       │           └── service/
+│   │       │
+│   │       └── resources/
+│   │
+│   ├── pom.xml
+│   └── Dockerfile
+│
+├── docker-compose.yml
+├── .env.example
+├── .gitignore
+└── README.md
+```
 
 ---
 
-# 📅 Appointment System
+# 🧩 Backend Architecture
 
-Patients can:
+The backend follows a layered architecture:
 
-1. View available doctors
-2. Open doctor details
-3. Select an available date
-4. Select an available time slot
-5. Book an appointment
-6. View appointment details
-7. Track appointment status
+```text
+Controller
+     ↓
+Service
+     ↓
+Repository
+     ↓
+Database
+```
 
-Appointment information can include:
+Additional layers:
 
-* Patient
+```text
+Request DTO
+     ↓
+Mapper
+     ↓
+Entity
+     ↓
+Repository
+     ↓
+Database
+```
+
+And for responses:
+
+```text
+Database
+     ↓
+Entity
+     ↓
+Mapper
+     ↓
+Response DTO
+     ↓
+Controller
+     ↓
+Client
+```
+
+This keeps business logic, database access, API models, and HTTP handling separated.
+
+---
+
+# 🗄️ Database
+
+The application uses **MySQL** with **Spring Data JPA / Hibernate**.
+
+Main application entities include:
+
+* User
 * Doctor
-* Date
-* Time
-* Status
-* Appointment details
+* Patient
+* Appointment
+* Doctor Availability
 
-Typical appointment statuses include:
+Relationships between entities are handled using JPA/Hibernate mappings.
+
+---
+
+# 🐳 Docker
+
+The project is containerized using Docker.
+
+The application consists of three main containers:
 
 ```text
-BOOKED
-CANCELLED
-COMPLETED
+┌──────────────────────┐
+│      Frontend        │
+│   React + Nginx      │
+│       :5173          │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│       Backend        │
+│     Spring Boot      │
+│       :9091          │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│        MySQL         │
+│       MySQL 8        │
+│       :3307          │
+└──────────────────────┘
+```
+
+Docker Compose creates a shared Docker network so the backend can communicate with MySQL using the service name:
+
+```text
+mysql:3306
 ```
 
 ---
 
-# 🩺 Doctor Availability
+# ⚙️ Environment Variables
 
-Doctors can manage their available time slots.
+Sensitive configuration is kept outside the source code.
 
-The availability system allows patients to see suitable dates and time slots before booking an appointment.
+Create a local `.env` file based on:
 
 ```text
-Doctor
-   │
-   ▼
-Set Availability
-   │
-   ▼
-Available Date / Time
-   │
-   ▼
-Patient
-   │
-   ▼
-Book Appointment
+.env.example
+```
+
+Example:
+
+```env
+MYSQL_ROOT_PASSWORD=your_mysql_password
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRATION=86400000
+```
+
+> Never commit your real `.env` file or database credentials to GitHub.
+
+---
+
+# ▶️ Running the Project Locally
+
+## Prerequisites
+
+Install:
+
+* Java 21
+* Maven
+* Node.js
+* Docker Desktop
+* Git
+
+---
+
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/Sumitdaasss/hospital-management-system.git
+```
+
+```bash
+cd hospital-management-system
 ```
 
 ---
 
-# 🌐 Main Backend URL
+## 2. Configure environment variables
+
+Create:
 
 ```text
-http://localhost:9090
+.env
 ```
 
-Example authentication endpoint:
+using:
 
-```http
+```text
+.env.example
+```
+
+Add your local database password and JWT configuration.
+
+---
+
+## 3. Start the complete application with Docker
+
+From the project root:
+
+```bash
+docker compose up
+```
+
+To rebuild the containers:
+
+```bash
+docker compose up --build
+```
+
+---
+
+## 4. Open the application
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+Backend:
+
+```text
+http://localhost:9091
+```
+
+Health check:
+
+```text
+http://localhost:9091/actuator/health
+```
+
+Expected response:
+
+```json
+{
+  "status": "UP"
+}
+```
+
+---
+
+# 🔄 GitHub Actions
+
+The project includes a GitHub Actions workflow for automated CI/CD.
+
+The workflow performs tasks such as:
+
+```text
+Git Push
+   │
+   ▼
+GitHub Actions
+   │
+   ├── Backend Build & Test
+   │
+   ├── Frontend Build
+   │
+   └── Docker Image Build & Push
+            │
+            ▼
+           GHCR
+```
+
+This allows Docker images to be automatically built when changes are pushed to the repository.
+
+---
+
+# 📦 GitHub Container Registry
+
+Docker images are published to GitHub Container Registry.
+
+### Backend
+
+```text
+ghcr.io/sumitdaasss/hospital-management-system-backend
+```
+
+### Frontend
+
+```text
+ghcr.io/sumitdaasss/hospital-management-system-frontend
+```
+
+The backend Docker image uses a multi-stage Docker build to separate the Maven build environment from the runtime environment.
+
+The runtime image was optimized from approximately **834 MB to approximately 524 MB locally**, reducing the image size by roughly 37%.
+
+---
+
+# 🩺 Health Monitoring
+
+Spring Boot Actuator is used for application health monitoring.
+
+Health endpoint:
+
+```text
+GET /actuator/health
+```
+
+This is also useful for container orchestration and deployment health checks.
+
+---
+
+# 🔌 API Overview
+
+The backend provides REST APIs for the major application modules.
+
+### Authentication
+
+```text
 POST /api/auth/register
 POST /api/auth/login
 ```
 
-Other API endpoints are organized according to their respective resources such as:
+### Doctors
 
 ```text
-/api/doctors
-/api/patients
-/api/appointments
-/api/availability
+GET    /api/doctors
+POST   /api/doctors
+GET    /api/doctors/{id}
+PUT    /api/doctors/{id}
+DELETE /api/doctors/{id}
 ```
+
+### Patients
+
+```text
+GET    /api/patients
+POST   /api/patients
+GET    /api/patients/{id}
+PUT    /api/patients/{id}
+DELETE /api/patients/{id}
+```
+
+### Appointments
+
+```text
+GET    /api/appointments
+POST   /api/appointments
+GET    /api/appointments/{id}
+PUT    /api/appointments/{id}
+DELETE /api/appointments/{id}
+```
+
+### Doctor Availability
+
+```text
+GET    /api/doctor-availability
+POST   /api/doctor-availability
+PUT    /api/doctor-availability/{id}
+DELETE /api/doctor-availability/{id}
+```
+
+> API paths may vary depending on the current controller mappings in the project.
 
 ---
 
 # 🧪 Testing
 
-The backend REST APIs can be tested using:
-
-* Postman
-* Insomnia
-* Frontend application
-
-For protected endpoints, provide the JWT token:
-
-```http
-Authorization: Bearer YOUR_JWT_TOKEN
-```
-
----
-
-# 📦 Build Commands
-
-## Backend
+The project can be built and tested using Maven:
 
 ```bash
 cd hospital-management-system
+```
+
+```bash
+mvn clean test
+```
+
+To create the Spring Boot JAR:
+
+```bash
 mvn clean package
 ```
 
-Run the generated application:
+---
 
-```bash
-java -jar target/hospital-management-system-0.0.1-SNAPSHOT.jar
-```
+# 🎯 Learning Objectives
 
-## Frontend
+This project was created to demonstrate practical understanding of:
 
-```bash
-cd Frontend
-npm run build
-```
-
-Preview the production build:
-
-```bash
-npm run preview
-```
+* Java and Spring Boot
+* REST API development
+* Spring Security
+* JWT authentication
+* Role-based authorization
+* JPA/Hibernate
+* MySQL database integration
+* DTO and Mapper patterns
+* Exception handling
+* Input validation
+* React frontend development
+* Frontend-backend integration
+* Docker containerization
+* Docker Compose
+* Git/GitHub
+* GitHub Actions
+* GitHub Container Registry
+* Environment-based configuration
 
 ---
 
-# 🔒 Security Notes
+# 📸 Screenshots
 
-Do not commit sensitive information such as:
+Add screenshots of the application here.
+
+Recommended screenshots:
+
+1. Login page
+2. Registration page
+3. Dashboard
+4. Doctor management
+5. Patient management
+6. Doctor availability
+7. Appointment booking
+8. Appointment status
+
+Example:
 
 ```text
-Database passwords
-JWT secrets
-API keys
-.env files
-Production credentials
+screenshots/
+├── login.png
+├── register.png
+├── dashboard.png
+├── doctors.png
+├── patients.png
+├── availability.png
+└── appointments.png
 ```
 
-Recommended `.gitignore` entries:
+Then add them to this README using:
 
-```gitignore
-# Node
-node_modules/
-dist/
-
-# Environment files
-.env
-.env.*
-!.env.example
-
-# Java / Maven
-target/
-
-# IntelliJ IDEA
-.idea/
-*.iml
-
-# Logs
-*.log
+```markdown
+![Login](screenshots/login.png)
 ```
 
 ---
 
-# 📌 Future Improvements
+# 🚧 Future Improvements
 
-Possible future enhancements include:
+Possible future improvements include:
 
+* Swagger/OpenAPI documentation
+* Additional automated tests
+* Database migration management with Flyway
 * Email notifications
-* Password reset
-* Doctor search and filtering
-* Prescription management
-* Medical records
-* Payment integration
-* Admin analytics
 * Appointment reminders
-* Docker deployment
+* Improved reporting and analytics
 * Cloud deployment
-* Production database configuration
+
+These are future enhancements and are not required for the current project.
 
 ---
 
-# 👨‍💻 Project
+# 👨‍💻 Author
 
-**Hospital Management System**
+**Sumit Das**
 
-A full-stack application designed to simplify hospital operations by connecting patients, doctors, and administrators through a centralized web application.
+GitHub:
+
+```text
+https://github.com/Sumitdaasss
+```
 
 ---
 
-## ⭐ If you find this project useful
+# ⭐ Project Summary
 
-Consider giving the repository a ⭐ on GitHub.
+The **Hospital Management System** is a full-stack application demonstrating the integration of:
+
+```text
+React
+   +
+Spring Boot
+   +
+Spring Security + JWT
+   +
+JPA / Hibernate
+   +
+MySQL
+   +
+Docker
+   +
+GitHub Actions
+   +
+GHCR
+```
+
+The project was developed as a practical **fresher/interview portfolio project** to demonstrate full-stack development, backend API design, authentication, database integration, containerization, and CI/CD fundamentals.
