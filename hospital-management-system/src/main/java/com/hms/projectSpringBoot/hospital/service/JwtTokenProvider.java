@@ -19,10 +19,7 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration:86400000}")
     private long jwtExpiration;
 
-
-    // =========================================================
-    // CREATE SECRET KEY
-    // =========================================================
+    // Creates the secret key used to sign and verify JWTs.
 
     private SecretKey getSigningKey() {
 
@@ -32,9 +29,7 @@ public class JwtTokenProvider {
     }
 
 
-    // =========================================================
-    // GENERATE JWT TOKEN
-    // =========================================================
+    // Generate JWT token after successful login.
 
     public String generateToken(
             Long userId,
@@ -45,7 +40,7 @@ public class JwtTokenProvider {
 
         Date now = new Date();
 
-        Date expiryDate =
+        Date expiration =
                 new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
@@ -59,16 +54,16 @@ public class JwtTokenProvider {
                 // Email
                 .claim("email", email)
 
-                // USER ROLE
+                // User role
                 .claim("role", role)
 
-                // Created time
+                // Token creation time
                 .issuedAt(now)
 
-                // Expiration time
-                .expiration(expiryDate)
+                // Token expiration
+                .expiration(expiration)
 
-                // Sign token
+                // Sign JWT
                 .signWith(getSigningKey())
 
                 // Convert to String
@@ -76,9 +71,7 @@ public class JwtTokenProvider {
     }
 
 
-    // =========================================================
-    // VALIDATE TOKEN
-    // =========================================================
+    //Validate JWT token.
 
     public boolean validateToken(String token) {
 
@@ -91,85 +84,67 @@ public class JwtTokenProvider {
 
             return true;
 
-        } catch (Exception ex) {
+        } catch (Exception exception) {
 
             return false;
         }
     }
 
-
-    // =========================================================
-    // EXTRACT USERNAME
-    // =========================================================
-
+    /**
+     * Extract username from JWT.
+     */
     public String extractUsername(String token) {
 
-        Claims claims =
-                Jwts.parser()
-                        .verifyWith(getSigningKey())
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
+        Claims claims = getClaims(token);
 
         return claims.getSubject();
     }
 
-
-    // =========================================================
-    // EXTRACT USER ID
-    // =========================================================
-
+    /**
+     * Extract user ID from JWT.
+     */
     public Long extractUserId(String token) {
 
-        Claims claims =
-                Jwts.parser()
-                        .verifyWith(getSigningKey())
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
+        Claims claims = getClaims(token);
 
         return claims.get("id", Long.class);
     }
 
-
-    // =========================================================
-    // EXTRACT EMAIL
-    // =========================================================
-
+    /**
+     * Extract email from JWT.
+     */
     public String extractEmail(String token) {
 
-        Claims claims =
-                Jwts.parser()
-                        .verifyWith(getSigningKey())
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
+        Claims claims = getClaims(token);
 
         return claims.get("email", String.class);
     }
 
-
-    // =========================================================
-    // EXTRACT ROLE
-    // =========================================================
-
+    /**
+     * Extract role from JWT.
+     */
     public String extractRole(String token) {
 
-        Claims claims =
-                Jwts.parser()
-                        .verifyWith(getSigningKey())
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
+        Claims claims = getClaims(token);
 
         return claims.get("role", String.class);
     }
 
+    /**
+     * Extract all claims from JWT.
+     */
+    private Claims getClaims(String token) {
 
-    // =========================================================
-    // TOKEN EXPIRATION
-    // =========================================================
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
 
+    /**
+     * Get configured token expiration time.
+     */
     public long getTokenExpirationTime() {
 
         return jwtExpiration;

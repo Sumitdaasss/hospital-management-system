@@ -19,97 +19,153 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final DoctorMapper doctorMapper;
 
-    // Creating Doctor
-    public DoctorResponseDTO createDoctor(DoctorRequestDTO doctorRequestDTO) {
+    // =========================================================
+    // CREATE DOCTOR
+    // =========================================================
 
-        if (doctorRepository.existsByEmail(doctorRequestDTO.getEmail())) {
+    public DoctorResponseDTO createDoctor(
+            DoctorRequestDTO doctorRequestDTO) {
+
+        if (doctorRepository.existsByEmail(
+                doctorRequestDTO.getEmail())) {
+
             throw new DuplicateResourceException(
                     "Doctor with this email already exists"
             );
         }
 
-        Doctor doctor = doctorMapper.toEntity(doctorRequestDTO);
+        Doctor doctor =
+                doctorMapper.toEntity(doctorRequestDTO);
+
         doctor.setAvailable(true);
 
-        Doctor savedDoctor = doctorRepository.save(doctor);
+        Doctor savedDoctor =
+                doctorRepository.save(doctor);
 
         return doctorMapper.toResponseDTO(savedDoctor);
     }
 
-    // Get All Doctors by using List from Collection framework
+    // =========================================================
+    // GET ALL DOCTORS
+    // =========================================================
+
     public List<DoctorResponseDTO> getAllDoctors() {
 
-        return doctorRepository.findAll().stream()
+        return doctorRepository.findAll()
+                .stream()
                 .map(doctorMapper::toResponseDTO)
                 .toList();
     }
 
-    // Get Doctor By Its ID
+    // =========================================================
+    // GET DOCTOR BY ID
+    // =========================================================
+
     public DoctorResponseDTO getDoctorById(Long id) {
 
-        Doctor doctor = findDoctorEntityById(id);
+        Doctor doctor =
+                findDoctorEntityById(id);
 
         return doctorMapper.toResponseDTO(doctor);
     }
 
-    // Update Doctor
-    public DoctorResponseDTO updateDoctor(Long id, DoctorRequestDTO requestDTO) {
+    // =========================================================
+    // UPDATE DOCTOR
+    // =========================================================
 
-        Doctor existingDoctor = findDoctorEntityById(id);
+    public DoctorResponseDTO updateDoctor(
+            Long id,
+            DoctorRequestDTO requestDTO) {
+
+        Doctor existingDoctor =
+                findDoctorEntityById(id);
 
         if (doctorRepository.existsByEmailAndIdNot(
                 requestDTO.getEmail(), id)) {
 
-            throw new DuplicateResourceException("Doctor with this email already exists");
+            throw new DuplicateResourceException(
+                    "Doctor with this email already exists"
+            );
         }
 
-        doctorMapper.updateEntityFromDto(requestDTO, existingDoctor);
+        doctorMapper.updateEntityFromDto(
+                requestDTO,
+                existingDoctor
+        );
 
-        Doctor updatedDoctor = doctorRepository.save(existingDoctor);
+        Doctor updatedDoctor =
+                doctorRepository.save(existingDoctor);
 
         return doctorMapper.toResponseDTO(updatedDoctor);
     }
 
-    // Delete Doctor
+    // =========================================================
+    // DELETE DOCTOR
+    // =========================================================
+
     public void deleteDoctor(Long id) {
 
-        Doctor doctor = findDoctorEntityById(id);
+        Doctor doctor =
+                findDoctorEntityById(id);
 
         doctorRepository.delete(doctor);
     }
 
-    // Get Doctor By their Specialization
-    public List<DoctorResponseDTO> getDoctorsBySpecialization(String specialization) {
+    // =========================================================
+    // GET DOCTORS BY SPECIALIZATION
+    // =========================================================
 
-        return doctorRepository.findBySpecialization(specialization)
+    public List<DoctorResponseDTO> getDoctorsBySpecialization(
+            String specialization) {
+
+        return doctorRepository
+                .findBySpecialization(specialization)
                 .stream()
                 .map(doctorMapper::toResponseDTO)
                 .toList();
     }
+
+    // =========================================================
+    // GET AVAILABLE DOCTORS
+    // =========================================================
 
     public List<DoctorResponseDTO> getAvailableDoctors() {
 
-        return doctorRepository.findByAvailableTrue()
+        return doctorRepository
+                .findByAvailableTrue()
                 .stream()
                 .map(doctorMapper::toResponseDTO)
                 .toList();
     }
 
-    public List<DoctorResponseDTO> getAvailableDoctorsBySpecialization(String specialization) {
+    // =========================================================
+    // GET AVAILABLE DOCTORS BY SPECIALIZATION
+    // =========================================================
+
+    public List<DoctorResponseDTO>
+    getAvailableDoctorsBySpecialization(
+            String specialization) {
 
         return doctorRepository
-                .findBySpecializationAndAvailableTrue(specialization)
+                .findBySpecializationAndAvailableTrue(
+                        specialization
+                )
                 .stream()
                 .map(doctorMapper::toResponseDTO)
                 .toList();
     }
 
-    // internal helper - other services (e.g. AppointmentService,
-    // DoctorAvailabilityService) need the raw entity, not the DTO
+    // =========================================================
+    // INTERNAL HELPER
+    // =========================================================
+
     private Doctor findDoctorEntityById(Long id) {
 
         return doctorRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Doctor", id));
+                        new ResourceNotFoundException(
+                                "Doctor",
+                                id
+                        ));
     }
 }

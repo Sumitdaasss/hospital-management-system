@@ -22,7 +22,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -32,34 +31,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
 
-            // Get JWT token from request
+            // 1. Get JWT from Authorization header
             String token = getTokenFromRequest(request);
 
-            // Check if token exists and is valid
+            // 2. Check whether token exists and is valid
             if (StringUtils.hasText(token)
                     && jwtTokenProvider.validateToken(token)) {
 
-                // Get username from JWT
+                // 3. Get username from JWT
                 String username =
                         jwtTokenProvider.extractUsername(token);
 
-                // Get role from JWT
+                // 4. Get role from JWT
                 String role =
                         jwtTokenProvider.extractRole(token);
 
-                /*
-                 * Spring Security expects:
-                 *
-                 * ROLE_ADMIN
-                 * ROLE_DOCTOR
-                 * ROLE_PATIENT
-                 */
+                // 5. Convert role into Spring Security authority
                 SimpleGrantedAuthority authority =
                         new SimpleGrantedAuthority(
                                 "ROLE_" + role
                         );
 
-                // Create authentication object
+                // 6. Create authenticated user
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 username,
@@ -67,45 +60,38 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 List.of(authority)
                         );
 
-                // Store authentication in SecurityContext
+                // 7. Store authentication in SecurityContext
                 SecurityContextHolder
                         .getContext()
                         .setAuthentication(authentication);
             }
 
-        } catch (Exception e) {
+        } catch (Exception exception) {
 
-            // Invalid token
-            SecurityContextHolder
-                    .clearContext();
+            // Invalid JWT
+            SecurityContextHolder.clearContext();
         }
 
         // Continue request
         filterChain.doFilter(request, response);
     }
 
-
-    // =========================================================
-    // GET JWT TOKEN FROM REQUEST
-    // =========================================================
-
+    /**
+     * Gets JWT from:
+     *
+     * Authorization: Bearer <token>
+     */
     private String getTokenFromRequest(
             HttpServletRequest request
     ) {
 
-        String bearerToken =
+        String authorizationHeader =
                 request.getHeader("Authorization");
 
-        /*
-         * Expected:
-         *
-         * Authorization: Bearer eyJhbGciOi...
-         */
+        if (StringUtils.hasText(authorizationHeader)
+                && authorizationHeader.startsWith("Bearer ")) {
 
-        if (StringUtils.hasText(bearerToken)
-                && bearerToken.startsWith("Bearer ")) {
-
-            return bearerToken.substring(7);
+            return authorizationHeader.substring(7);
         }
 
         return null;
